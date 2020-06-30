@@ -11,5 +11,5 @@ data class GeneralAndSpecificWeatherData(
         parentColumn = "id",
         entityColumn = "generalWeatherDataId"
     )
-    val weatherData: List<WeatherModel>
+    val weatherData: MutableList<WeatherModel>
 )

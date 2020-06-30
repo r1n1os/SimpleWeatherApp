@@ -18,6 +18,7 @@ class MainPageViewModel(application: Application) : BaseViewModel(application) {
 
     private var weatherService = WeatherService().getWeatherService()
     val weatherSearchHistory = MutableLiveData<MutableList<GeneralAndSpecificWeatherData>>()
+    val cityNames = MutableLiveData<MutableList<String>>()
 
 /*    init {
         DaggerApiComponent.create().inject(this)
@@ -57,15 +58,28 @@ class MainPageViewModel(application: Application) : BaseViewModel(application) {
                     }
                     generalWeatherData.let {
                         db.generalWeatherDataDao().insertGeneralWeatherData(it!!)
-                        it.weather.let { weatherModel ->
-                            db.weatherDao().insertWeatherData(weatherModel)
-                        }
+                        //db.weatherDao().insertWeatherData(it.weather)
                     }
                     list = db.generalWeatherDataDao().getWeatherData()
                 }
+                getAllCityNamesFromWeatherHistory()
                 emit(list)
             }.collect { generalAndSpecificWeatherData ->
-                 weatherSearchHistory.value = generalAndSpecificWeatherData
+                weatherSearchHistory.value = generalAndSpecificWeatherData
+            }
+        }
+    }
+
+    private fun getAllCityNamesFromWeatherHistory() {
+        launch {
+            flow {
+                var cityNamesList = mutableListOf<String>()
+                withContext(Dispatchers.IO) {
+                    cityNamesList = db.generalWeatherDataDao().getAllAvailableCityNames()
+                }
+                emit(cityNamesList)
+            }.collect { cityNameList ->
+                cityNames.value = cityNameList
             }
         }
     }

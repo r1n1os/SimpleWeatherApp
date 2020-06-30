@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import com.example.simpleweatherapp.R
@@ -17,7 +18,7 @@ import com.example.simpleweatherapp.view_model.MainPageViewModel
 import kotlinx.android.synthetic.main.fragment_main_page.*
 
 class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperClass.OnPermissionListener,
-    GetUserLocationClass.OnGetUserCurrentLocationCommonClass {
+        GetUserLocationClass.OnGetUserCurrentLocationCommonClass {
 
     companion object {
         //permission
@@ -40,6 +41,7 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
         requestForLocationPermissions()
         initAdapter()
         observeWeather()
+        observeListOfAvailableCityNames()
     }
 
     private fun initAdapter() {
@@ -50,11 +52,22 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
     private fun observeWeather() {
         viewModel.weatherSearchHistory.observe(this.requireActivity(), Observer { weatherHistory ->
             weatherHistory?.let {
-                Log.d("WeatherREsult", it.size.toString())
                 adapter?.loadData(it)
             }
         })
     }
+
+    private fun observeListOfAvailableCityNames() {
+        viewModel.cityNames.observe(this.requireActivity(), Observer { listOfCityNames ->
+            setCityNamesToSpinner(listOfCityNames)
+        })
+    }
+
+    private fun setCityNamesToSpinner(listOfCityNames: MutableList<String>?) {
+        val spinnerAdapter = ArrayAdapter(this.requireContext(), android.R.layout.simple_spinner_item, listOfCityNames as List<String>)
+        mainPageSpinner.adapter = spinnerAdapter
+    }
+
 
     private fun requestForLocationPermissions() {
         val permissionsHelperClass = PermissionsHelperClass()
@@ -93,8 +106,9 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
      * GetUserLocationClass Listener
      * */
     override fun onCurrentUserLocationReceived(latitude: Double, longitude: Double) {
-        viewModel.getWeatherDetailsForCurrentCity(getString(R.string.weather_api_key),latitude, longitude)
+        viewModel.getWeatherDetailsForCurrentCity(getString(R.string.weather_api_key), latitude, longitude)
     }
+
     override fun initViewModel() = MainPageViewModel::class.java
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

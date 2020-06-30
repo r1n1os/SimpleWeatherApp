@@ -9,6 +9,7 @@ data class GeneralWeatherData(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
     val city_name: String,
+    val country_code: String,
     val lat: Double,
     val lon: Double,
     val temp: Double,

@@ -1,15 +1,20 @@
 package com.example.simpleweatherapp.database_models
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.ForeignKey.CASCADE
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(foreignKeys = [ForeignKey(entity = GeneralWeatherData::class,
+        parentColumns = arrayOf("id"),
+        childColumns = arrayOf("generalWeatherDataId"),
+        onDelete = CASCADE)])
 data class WeatherModel(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int,
-    val icon: String,
-    val code: String,
-    val description: String,
-    val generalWeatherDataId: Int
+        @PrimaryKey(autoGenerate = true)
+        var weatherModelId: Int,
+        var icon: String,
+        var code: String,
+        var description: String,
+        var generalWeatherDataId: Int
 )
 
