@@ -1,13 +1,18 @@
+
 package com.example.simpleweatherapp.database_models
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.example.simpleweatherapp.database_models.type_converters.WeatherModelTypeConverter
 
-@Database(entities = [TestDB::class], version = 1)
+@Database(entities = [GeneralWeatherData::class, WeatherModel::class], version = 1)
+@TypeConverters(WeatherModelTypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun baseWeatherDao(): TestDao
+    abstract fun generalWeatherDataDao(): GeneralWeatherDataDao
+    abstract fun weatherDao(): WeatherDao
 
     companion object {
         @Volatile

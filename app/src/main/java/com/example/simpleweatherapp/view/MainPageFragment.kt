@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import com.example.simpleweatherapp.R
 import com.example.simpleweatherapp.base_classes.BaseFragment
@@ -37,11 +38,11 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
     }
 
     private fun observeWeather() {
-        viewModel.weatherSearchHistory.observe(this.requireActivity(), Observer { weatherHistory ->
-            weatherHistory?.let {
-                Log.d("WeatherREsult", it.size.toString())
-            }
-        })
+        //viewModel.weatherSearchHistory.observe(this.requireActivity(), Observer { weatherHistory ->
+          //  weatherHistory?.let {
+               // Log.d("WeatherREsult", it.size.toString())
+          //  }
+       // })
     }
 
     private fun requestForLocationPermissions() {
@@ -49,8 +50,12 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
         permissionsHelperClass.checkPermissions(this.requireContext(), LOCATION_PERMISSIONS, this)
     }
 
+    private fun requestLocationPermissions() {
+        ActivityCompat.requestPermissions(this.requireActivity(), arrayOf(LOCATION_PERMISSIONS), LOCATION_PERMISSIONS_REQUEST_CODE)
+    }
+
     private fun handleRequestPermissions(grantResults: IntArray) {
-        viewModel.checkIfPermissionsAreGranted(grantResults)
+        //viewModel.checkIfPermissionsAreGranted(grantResults)
     }
 
     private fun getUserCurrentLocation() {
@@ -67,6 +72,7 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
     }
 
     override fun onPermissionRequestNeeded() {
+        requestLocationPermissions()
     }
 
     override fun onPermissionDeniedWithDontShowAgain() {

@@ -30,8 +30,8 @@ class PermissionsHelperClass {
     }
 
     private fun shouldAskForPermission(context: Context, permission: String): Boolean {
-        val isPermissionAlreadyGranded = ActivityCompat.checkSelfPermission(context, permission)
-        return isPermissionAlreadyGranded != PackageManager.PERMISSION_GRANTED
+        val isPermissionAlreadyGranted = ActivityCompat.checkSelfPermission(context, permission)
+        return isPermissionAlreadyGranted != PackageManager.PERMISSION_GRANTED
     }
 
 }
