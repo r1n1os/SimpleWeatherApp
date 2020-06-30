@@ -9,10 +9,12 @@ import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import com.example.simpleweatherapp.R
+import com.example.simpleweatherapp.adapters.MainPageRecyclerViewAdapter
 import com.example.simpleweatherapp.base_classes.BaseFragment
 import com.example.simpleweatherapp.utils.GetUserLocationClass
 import com.example.simpleweatherapp.utils.PermissionsHelperClass
 import com.example.simpleweatherapp.view_model.MainPageViewModel
+import kotlinx.android.synthetic.main.fragment_main_page.*
 
 class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperClass.OnPermissionListener,
     GetUserLocationClass.OnGetUserCurrentLocationCommonClass {
@@ -22,6 +24,8 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
         const val LOCATION_PERMISSIONS = Manifest.permission.ACCESS_COARSE_LOCATION
         const val LOCATION_PERMISSIONS_REQUEST_CODE = 31
     }
+
+    private var adapter: MainPageRecyclerViewAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_main_page, container, false)
@@ -34,15 +38,22 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
 
     private fun initViewAndData() {
         requestForLocationPermissions()
+        initAdapter()
         observeWeather()
     }
 
+    private fun initAdapter() {
+        adapter = MainPageRecyclerViewAdapter()
+        weatherHistoryRecyclerView.adapter = adapter
+    }
+
     private fun observeWeather() {
-        //viewModel.weatherSearchHistory.observe(this.requireActivity(), Observer { weatherHistory ->
-          //  weatherHistory?.let {
-               // Log.d("WeatherREsult", it.size.toString())
-          //  }
-       // })
+        viewModel.weatherSearchHistory.observe(this.requireActivity(), Observer { weatherHistory ->
+            weatherHistory?.let {
+                Log.d("WeatherREsult", it.size.toString())
+                adapter?.loadData(it)
+            }
+        })
     }
 
     private fun requestForLocationPermissions() {

@@ -5,5 +5,5 @@ data class BaseWeatherModel(
     @SerializedName("count")
     val count: Int,
     @SerializedName("data")
-    val generalWeatherModel: List<GeneralWeatherData>
+    val generalWeatherModel: MutableList<GeneralWeatherData>
 )

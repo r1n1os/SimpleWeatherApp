@@ -10,6 +10,6 @@ interface GeneralWeatherDataDao {
 
     @Transaction
     @Query("SELECT * FROM GeneralWeatherData")
-    fun getWeatherData(): List<GeneralAndSpecificWeatherData>
+    fun getWeatherData(): MutableList<GeneralAndSpecificWeatherData>
 
 }

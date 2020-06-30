@@ -1,10 +1,8 @@
 package com.example.simpleweatherapp.view_model
 
 import android.app.Application
-import android.content.pm.PackageManager
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.example.simpleweatherapp.SimpleWeatherApp
 import com.example.simpleweatherapp.base_classes.BaseViewModel
 import com.example.simpleweatherapp.database_models.*
 import com.example.simpleweatherapp.services.WeatherService
@@ -16,10 +14,10 @@ import kotlinx.coroutines.withContext
 
 class MainPageViewModel(application: Application) : BaseViewModel(application) {
 
-     private val db by lazy { AppDatabase.getDatabase(getApplication()) }
+    private val db by lazy { AppDatabase.getDatabase(getApplication()) }
 
     private var weatherService = WeatherService().getWeatherService()
-     val weatherSearchHistory = MutableLiveData<List<GeneralWeatherData>>()
+    val weatherSearchHistory = MutableLiveData<MutableList<GeneralAndSpecificWeatherData>>()
 
 /*    init {
         DaggerApiComponent.create().inject(this)
@@ -49,31 +47,27 @@ class MainPageViewModel(application: Application) : BaseViewModel(application) {
      * I have to parse the JsonArray that's why I am using list for the BaseWeatherModel. So I am using for instead of get index of 0 to avoid any case that might produce crash
      * */
     private fun saveWeatherDataIntoLocalDatabase(baseWeatherModel: BaseWeatherModel) {
-         launch {
-             flow {
-                 var list = listOf<GeneralAndSpecificWeatherData>()
-                 withContext(Dispatchers.IO) {
-                     var generalWeatherData:  GeneralWeatherData? = null
-                     baseWeatherModel.generalWeatherModel.forEach { tempGeneralWeatherModel ->
-                         generalWeatherData = tempGeneralWeatherModel
-                     }
-                     generalWeatherData.let {
-                         db.generalWeatherDataDao().insertGeneralWeatherData(it!!)
-                         it.weather.let { weatherModel ->
-                             db.weatherDao().insertWeatherData(weatherModel)
-                         }
-                     }
-                     list = db.generalWeatherDataDao().getWeatherData()
-                 }
-                 emit(list)
-             }.collect{generalAndSpecificWeatherData ->
-                 generalAndSpecificWeatherData.forEach {tempGeneralAndSpecificWeatherData ->
-                     Log.d("mTest", tempGeneralAndSpecificWeatherData.generalWeatherData.city_name)
-                     tempGeneralAndSpecificWeatherData.weatherData.forEach { weather ->
-                         Log.d("mTest", weather.description)
-                     }
-                 }
-             }
-         }
+        launch {
+            flow {
+                var list = mutableListOf<GeneralAndSpecificWeatherData>()
+                withContext(Dispatchers.IO) {
+                    var generalWeatherData: GeneralWeatherData? = null
+                    baseWeatherModel.generalWeatherModel.forEach { tempGeneralWeatherModel ->
+                        generalWeatherData = tempGeneralWeatherModel
+                    }
+                    generalWeatherData.let {
+                        db.generalWeatherDataDao().insertGeneralWeatherData(it!!)
+                        it.weather.let { weatherModel ->
+                            db.weatherDao().insertWeatherData(weatherModel)
+                        }
+                    }
+                    list = db.generalWeatherDataDao().getWeatherData()
+                }
+                emit(list)
+            }.collect { generalAndSpecificWeatherData ->
+                 weatherSearchHistory.value = generalAndSpecificWeatherData
+            }
+        }
     }
 }
+
