@@ -10,6 +10,8 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import com.example.simpleweatherapp.R
 import com.example.simpleweatherapp.adapters.MainPageRecyclerViewAdapter
 import com.example.simpleweatherapp.base_classes.BaseFragment
@@ -19,7 +21,7 @@ import com.example.simpleweatherapp.view_model.MainPageViewModel
 import kotlinx.android.synthetic.main.fragment_main_page.*
 
 class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperClass.OnPermissionListener,
-        GetUserLocationClass.OnGetUserCurrentLocationCommonClass, AdapterView.OnItemSelectedListener {
+        GetUserLocationClass.OnGetUserCurrentLocationCommonClass, AdapterView.OnItemSelectedListener, View.OnClickListener {
 
     companion object {
         //permission
@@ -27,6 +29,7 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
         const val LOCATION_PERMISSIONS_REQUEST_CODE = 31
     }
 
+    private lateinit var navController: NavController
     private var adapter: MainPageRecyclerViewAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -35,6 +38,7 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        navController = Navigation.findNavController(view)
         initViewAndData()
     }
 
@@ -48,6 +52,7 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
 
     private fun initListeners() {
         mainPageSpinner.onItemSelectedListener = this
+        savedPLacesImageView.setOnClickListener(this)
     }
 
     private fun initAdapter() {
@@ -92,6 +97,12 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
         val userCurrentLocationClass = GetUserLocationClass(this.requireActivity())
         userCurrentLocationClass.getUserCurrentLocation()
         userCurrentLocationClass.initListener(this)
+    }
+
+    override fun onClick(v: View?) {
+        when(v){
+            savedPLacesImageView -> navController.navigate(R.id.action_mainPageFragment_to_placeListFragment)
+        }
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {

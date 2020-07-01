@@ -3,4 +3,6 @@
    <string name="weather_api_key">156b4168909644728132f265a8626cb3</string>
     <string name="please_wait">Please wait</string>
     <string name="all_cities">All Cities</string>
+    <string name="places_list">Places List</string>
+    <string name="place_name">Place Name</string>
 </resources>

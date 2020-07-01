@@ -23,6 +23,13 @@
             android:text="Main Page"
             android:textSize="20sp"
             android:textColor="@color/white"/>
+        <ImageView
+            android:id="@+id/savedPLacesImageView"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="25dp"
+            app:srcCompat="@drawable/ic_saved_places_icon"/>
 
         <androidx.appcompat.widget.AppCompatSpinner
             android:id="@+id/mainPageSpinner"
@@ -30,6 +37,8 @@
             android:layout_height="20dp"
             android:layout_gravity="end"
             android:layout_marginEnd="25dp" />
+
+
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.recyclerview.widget.RecyclerView
