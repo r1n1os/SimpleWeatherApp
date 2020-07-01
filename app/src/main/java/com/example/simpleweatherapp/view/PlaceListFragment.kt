@@ -2,7 +2,9 @@ package com.example.simpleweatherapp.view
 
 import android.os.Bundle
 import android.view.*
+import androidx.lifecycle.Observer
 import com.example.simpleweatherapp.R
+import com.example.simpleweatherapp.adapters.MainPageRecyclerViewAdapter
 import com.example.simpleweatherapp.base_classes.BaseFragment
 import com.example.simpleweatherapp.utils.Constants.GONE
 import com.example.simpleweatherapp.utils.Constants.INVISIBLE
@@ -14,6 +16,8 @@ import kotlinx.android.synthetic.main.fragment_place_list.*
 
 class PlaceListFragment : BaseFragment<PlaceListViewModel>(), View.OnClickListener {
 
+    private var adapter: MainPageRecyclerViewAdapter? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_place_list, container, false)
     }
@@ -24,6 +28,30 @@ class PlaceListFragment : BaseFragment<PlaceListViewModel>(), View.OnClickListen
     }
 
     private fun initViewAndData() {
+        initAdapter()
+        initListeners()
+        executeLocalRequestForSavedWeatherPlaces()
+        observedSavePlaces()
+    }
+
+    private fun initAdapter() {
+        adapter = MainPageRecyclerViewAdapter()
+        savedPlacesRecyclerView.adapter = adapter
+    }
+
+    private fun executeLocalRequestForSavedWeatherPlaces() {
+        showProgressDialog()
+        viewModel.loadAllSavedWeatherPlacesFromLocalDatabase()
+    }
+
+    private fun observedSavePlaces() {
+        hideProgressDialog()
+        viewModel.savedWeatherPlacesList.observe(this.requireActivity(), Observer { savedWeatherPlacesList ->
+           adapter?.loadData(savedWeatherPlacesList)
+        })
+    }
+
+    private fun initListeners() {
         searchIcon.setOnClickListener(this)
         cancelSearchViewArrow.setOnClickListener(this)
     }
