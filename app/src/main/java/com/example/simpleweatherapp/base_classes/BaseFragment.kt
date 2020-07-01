@@ -1,5 +1,6 @@
 package com.example.simpleweatherapp.base_classes
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.Toast
@@ -12,7 +13,10 @@ abstract class BaseFragment<T: BaseViewModel>: Fragment() {
 
     protected lateinit var viewModel: T
     protected abstract fun initViewModel(): Class<T>
+
     private var progressDialog: AlertDialog? = null
+    private var alertDialog: AlertDialog? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,5 +43,23 @@ abstract class BaseFragment<T: BaseViewModel>: Fragment() {
     protected fun hideProgressDialog() {
         if (progressDialog != null)
             progressDialog!!.dismiss()
+    }
+
+    protected fun showAlertDialog(title: String?, message: String?, dialogInterface: DialogInterface.OnClickListener?) {
+        hideAlertDialog()
+        activity?.runOnUiThread {
+            alertDialog = AlertDialog.Builder(this.requireContext())
+                    .setTitle(title)
+                    .setMessage(message)
+                    .setPositiveButton(getString(R.string.ok_text), dialogInterface)
+                    .setCancelable(false)
+                    .create()
+            alertDialog!!.show()
+        }
+    }
+
+    protected fun hideAlertDialog() {
+        if (alertDialog != null)
+            alertDialog!!.dismiss()
     }
 }

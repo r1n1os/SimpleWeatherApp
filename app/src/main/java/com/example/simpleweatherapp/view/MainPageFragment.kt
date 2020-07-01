@@ -2,7 +2,6 @@ package com.example.simpleweatherapp.view
 
 import android.Manifest
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.simpleweatherapp.R
-import com.example.simpleweatherapp.adapters.MainPageRecyclerViewAdapter
+import com.example.simpleweatherapp.adapters.WeatherRecyclerViewAdapter
 import com.example.simpleweatherapp.base_classes.BaseFragment
 import com.example.simpleweatherapp.utils.GetUserLocationClass
 import com.example.simpleweatherapp.utils.PermissionsHelperClass
@@ -21,7 +20,7 @@ import com.example.simpleweatherapp.view_model.MainPageViewModel
 import kotlinx.android.synthetic.main.fragment_main_page.*
 
 class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperClass.OnPermissionListener,
-        GetUserLocationClass.OnGetUserCurrentLocationCommonClass, AdapterView.OnItemSelectedListener, View.OnClickListener {
+        GetUserLocationClass.OnGetUserCurrentLocationCommonClass, AdapterView.OnItemSelectedListener, View.OnClickListener, WeatherRecyclerViewAdapter.OnWeatherAdapterListener {
 
     companion object {
         //permission
@@ -30,7 +29,7 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
     }
 
     private lateinit var navController: NavController
-    private var adapter: MainPageRecyclerViewAdapter? = null
+    private var adapter: WeatherRecyclerViewAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_main_page, container, false)
@@ -56,7 +55,7 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
     }
 
     private fun initAdapter() {
-        adapter = MainPageRecyclerViewAdapter()
+        adapter = WeatherRecyclerViewAdapter(this)
         weatherHistoryRecyclerView.adapter = adapter
     }
 

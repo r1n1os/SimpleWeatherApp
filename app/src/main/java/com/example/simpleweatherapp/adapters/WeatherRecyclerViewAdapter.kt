@@ -13,7 +13,11 @@ import com.example.simpleweatherapp.utils.Urls.BASE_ICON_URL
 import kotlinx.android.synthetic.main.weather_data_item_layout.view.*
 
 
-class MainPageRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class WeatherRecyclerViewAdapter(var onWeatherAdapterListener: OnWeatherAdapterListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    interface OnWeatherAdapterListener{
+        fun onWeatherResultClicked(selectedWeatherResult: GeneralAndSpecificWeatherData)  {}
+    }
 
     private var generalAndSpecificWeatherDataList = mutableListOf<GeneralAndSpecificWeatherData>()
 
@@ -42,6 +46,9 @@ class MainPageRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder
             itemView.weatherDescriptionTextView.text = generalAndSpecificWeatherData.generalWeatherData.weather.description
             val url = "$BASE_ICON_URL${generalAndSpecificWeatherData.generalWeatherData.weather.icon}.png"
             Glide.with(itemView.context).load(url).placeholder(createCircularProgressDrawable()).into(itemView.weatherStatusIcon)
+            itemView.setOnClickListener{
+                onWeatherAdapterListener.onWeatherResultClicked(generalAndSpecificWeatherDataList[adapterPosition])
+            }
         }
 
         private fun createCircularProgressDrawable(): CircularProgressDrawable {

@@ -5,4 +5,5 @@
     <string name="all_cities">All Cities</string>
     <string name="places_list">Places List</string>
     <string name="place_name">Place Name</string>
+    <string name="ok_text">Ok</string>
 </resources>
