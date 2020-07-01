@@ -6,7 +6,7 @@ import androidx.room.*
 interface GeneralWeatherDataDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertGeneralWeatherData(vararg generalWeatherData: GeneralWeatherData)
+    fun insertGeneralWeatherData(generalWeatherData: GeneralWeatherData): Long
 
     @Query("SELECT * FROM GeneralWeatherData")
     fun getAllGeneralWeatherData(): MutableList<GeneralWeatherData>

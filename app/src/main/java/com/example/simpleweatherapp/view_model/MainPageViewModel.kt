@@ -57,7 +57,9 @@ class MainPageViewModel(application: Application) : BaseViewModel(application) {
                         generalWeatherData = tempGeneralWeatherModel
                     }
                     generalWeatherData.let {
-                        db.generalWeatherDataDao().insertGeneralWeatherData(it!!)
+                        val generalWeatherId = db.generalWeatherDataDao().insertGeneralWeatherData(it!!)
+                        val weatherData = it.weather
+                        weatherData.generalWeatherDataId = generalWeatherId.toInt()
                         db.weatherDao().insertWeatherData(it.weather)
                     }
                     list = db.generalWeatherDataDao().getWeatherData()
