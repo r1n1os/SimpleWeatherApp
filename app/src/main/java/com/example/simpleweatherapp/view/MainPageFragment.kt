@@ -106,7 +106,7 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
      * GetUserLocationClass Listener
      * */
     override fun onCurrentUserLocationReceived(latitude: Double, longitude: Double) {
-        viewModel.getWeatherDetailsForCurrentCity(getString(R.string.weather_api_key), latitude, longitude)
+        viewModel.getWeatherDetailsForCurrentCity(getString(R.string.weather_api_key), 35.001965, 34.047329)
     }
 
     override fun initViewModel() = MainPageViewModel::class.java

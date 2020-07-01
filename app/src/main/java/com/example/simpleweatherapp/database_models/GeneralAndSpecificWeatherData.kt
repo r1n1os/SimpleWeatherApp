@@ -8,6 +8,7 @@ data class GeneralAndSpecificWeatherData(
     @Embedded
     val generalWeatherData: GeneralWeatherData,
     @Relation(
+        entity= WeatherModel::class,
         parentColumn = "id",
         entityColumn = "generalWeatherDataId"
     )

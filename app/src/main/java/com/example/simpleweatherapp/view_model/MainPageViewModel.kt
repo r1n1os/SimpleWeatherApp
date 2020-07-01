@@ -50,7 +50,7 @@ class MainPageViewModel(application: Application) : BaseViewModel(application) {
     private fun saveWeatherDataIntoLocalDatabase(baseWeatherModel: BaseWeatherModel) {
         launch {
             flow {
-                var list = mutableListOf<GeneralAndSpecificWeatherData>()
+                var list: MutableList<GeneralAndSpecificWeatherData>? = null
                 withContext(Dispatchers.IO) {
                     var generalWeatherData: GeneralWeatherData? = null
                     baseWeatherModel.generalWeatherModel.forEach { tempGeneralWeatherModel ->
@@ -58,7 +58,7 @@ class MainPageViewModel(application: Application) : BaseViewModel(application) {
                     }
                     generalWeatherData.let {
                         db.generalWeatherDataDao().insertGeneralWeatherData(it!!)
-                        //db.weatherDao().insertWeatherData(it.weather)
+                        db.weatherDao().insertWeatherData(it.weather)
                     }
                     list = db.generalWeatherDataDao().getWeatherData()
                 }

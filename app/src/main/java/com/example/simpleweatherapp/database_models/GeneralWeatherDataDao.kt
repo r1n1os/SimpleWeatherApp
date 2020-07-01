@@ -8,11 +8,14 @@ interface GeneralWeatherDataDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertGeneralWeatherData(vararg generalWeatherData: GeneralWeatherData)
 
-    @Query("SELECT city_name FROM GeneralWeatherData")
+    @Query("SELECT * FROM GeneralWeatherData")
+    fun getAllGeneralWeatherData(): MutableList<GeneralWeatherData>
+
+    @Query("SELECT DISTINCT city_name FROM GeneralWeatherData")
     fun getAllAvailableCityNames(): MutableList<String>
 
     @Transaction
     @Query("SELECT * FROM GeneralWeatherData")
-    fun getWeatherData(): MutableList<GeneralAndSpecificWeatherData>
+    fun getWeatherData(): MutableList<GeneralAndSpecificWeatherData>?
 
 }

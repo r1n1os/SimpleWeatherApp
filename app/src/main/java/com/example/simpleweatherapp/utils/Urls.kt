@@ -4,4 +4,5 @@ object Urls {
 
     const val BASE_URL = "https://api.weatherbit.io/v2.0/"
     const val GET_CURRENT_WEATHER_FOR_SPECIFIC_CITY_URL = "current"
+    const val BASE_ICON_URL = " https://www.weatherbit.io/static/img/icons/"
 }

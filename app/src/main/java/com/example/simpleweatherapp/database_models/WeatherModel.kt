@@ -5,10 +5,7 @@ import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
 import androidx.room.PrimaryKey
 
-@Entity(foreignKeys = [ForeignKey(entity = GeneralWeatherData::class,
-        parentColumns = arrayOf("id"),
-        childColumns = arrayOf("generalWeatherDataId"),
-        onDelete = CASCADE)])
+@Entity
 data class WeatherModel(
         @PrimaryKey(autoGenerate = true)
         var weatherModelId: Int,
