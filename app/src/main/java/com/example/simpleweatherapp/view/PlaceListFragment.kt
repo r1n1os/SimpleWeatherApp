@@ -3,6 +3,7 @@ package com.example.simpleweatherapp.view
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -18,7 +19,7 @@ import com.example.simpleweatherapp.view_model.PlaceListViewModel
 import kotlinx.android.synthetic.main.fragment_place_list.*
 
 
-class PlaceListFragment : BaseFragment<PlaceListViewModel>(), View.OnClickListener, WeatherRecyclerViewAdapter.OnWeatherAdapterListener {
+class PlaceListFragment : BaseFragment<PlaceListViewModel>(), View.OnClickListener, WeatherRecyclerViewAdapter.OnWeatherAdapterListener, SearchView.OnQueryTextListener {
 
     private var adapter: WeatherRecyclerViewAdapter? = null
     private lateinit var navController: NavController
@@ -81,6 +82,7 @@ class PlaceListFragment : BaseFragment<PlaceListViewModel>(), View.OnClickListen
     private fun initListeners() {
         searchIcon.setOnClickListener(this)
         cancelSearchViewArrow.setOnClickListener(this)
+        citySearchView.setOnQueryTextListener(this)
     }
 
     override fun onClick(v: View?) {
@@ -104,6 +106,15 @@ class PlaceListFragment : BaseFragment<PlaceListViewModel>(), View.OnClickListen
         mainPageTitle.changeVisibilityOfView(VISIBLE)
     }
 
+    /**
+     * SearchView listeners
+     * */
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        viewModel.executeRequestToGetWeatherDataByCityName(getString(R.string.weather_api_key), query.toString())
+        return true
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean { return true }
     /**
      * WeatherRecyclerViewAdapter Listeners
      * */

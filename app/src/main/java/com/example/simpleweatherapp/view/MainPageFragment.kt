@@ -63,7 +63,7 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
         hideProgressDialog()
         viewModel.weatherSearchHistory.observe(this.requireActivity(), Observer { weatherHistory ->
             weatherHistory?.let {
-                adapter?.loadData(it)
+                adapter?.loadData(it.sortedBy { it.generalWeatherData.id }.toMutableList())
             }
         })
     }

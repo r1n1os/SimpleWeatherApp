@@ -41,7 +41,6 @@ class PlaceListViewModel(application: Application) : BaseViewModel(application) 
     fun executeRequestToGetWeatherDataForSelectedCity(apiKey: String, selectedWeatherResult: GeneralAndSpecificWeatherData){
         launch {
             flow {
-                var savedWeatherPlaces = mutableListOf<GeneralAndSpecificWeatherData>()
                 withContext(Dispatchers.IO){
                     var weatherResponse =  weatherService.getWeatherDetailsBasedOnUserLocation(apiKey, selectedWeatherResult.generalWeatherData.lat, selectedWeatherResult.generalWeatherData.lon)
                     withContext(Dispatchers.Main) {
@@ -54,6 +53,26 @@ class PlaceListViewModel(application: Application) : BaseViewModel(application) 
                     }
                 }
             }.collect { baseWeatherModel ->
+                saveNewWeatherDataToLocalDatabase(baseWeatherModel)
+            }
+        }
+    }
+
+    fun executeRequestToGetWeatherDataByCityName(apiKey: String, cityName: String){
+        launch {
+            flow {
+                withContext(Dispatchers.IO) {
+                    var searchQueryWeatherResponse = weatherService.getWeatherDetailsBasedOnCity(apiKey, cityName)
+                    withContext(Dispatchers.Main) {
+                        if (searchQueryWeatherResponse.isSuccessful && searchQueryWeatherResponse.code() == 200) {
+                            emit(searchQueryWeatherResponse.body())
+                        } else {
+                            isWeatherUpdatedForSelectedPlace.value = false
+                            errorMessage.value = searchQueryWeatherResponse.message()
+                        }
+                    }
+                }
+            }.collect {baseWeatherModel ->
                 saveNewWeatherDataToLocalDatabase(baseWeatherModel)
             }
         }
