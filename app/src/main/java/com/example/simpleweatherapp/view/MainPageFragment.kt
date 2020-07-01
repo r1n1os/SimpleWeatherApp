@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
@@ -18,7 +19,7 @@ import com.example.simpleweatherapp.view_model.MainPageViewModel
 import kotlinx.android.synthetic.main.fragment_main_page.*
 
 class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperClass.OnPermissionListener,
-        GetUserLocationClass.OnGetUserCurrentLocationCommonClass {
+        GetUserLocationClass.OnGetUserCurrentLocationCommonClass, AdapterView.OnItemSelectedListener {
 
     companion object {
         //permission
@@ -40,8 +41,13 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
     private fun initViewAndData() {
         requestForLocationPermissions()
         initAdapter()
+        initListeners()
         observeWeather()
         observeListOfAvailableCityNames()
+    }
+
+    private fun initListeners() {
+        mainPageSpinner.onItemSelectedListener = this
     }
 
     private fun initAdapter() {
@@ -50,6 +56,7 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
     }
 
     private fun observeWeather() {
+        hideProgressDialog()
         viewModel.weatherSearchHistory.observe(this.requireActivity(), Observer { weatherHistory ->
             weatherHistory?.let {
                 adapter?.loadData(it)
@@ -67,7 +74,6 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
         val spinnerAdapter = ArrayAdapter(this.requireContext(), android.R.layout.simple_spinner_item, listOfCityNames as List<String>)
         mainPageSpinner.adapter = spinnerAdapter
     }
-
 
     private fun requestForLocationPermissions() {
         val permissionsHelperClass = PermissionsHelperClass()
@@ -88,10 +94,17 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
         userCurrentLocationClass.initListener(this)
     }
 
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+       // showProgressDialog()
+        viewModel.handleCitySelection(parent?.getItemAtPosition(position) as String)
+    }
+    override fun onNothingSelected(parent: AdapterView<*>?) {}
+
     /**
      * PermissionsHelperClass Listeners
      * */
     override fun onPermissionGranted() {
+        showProgressDialog()
         getUserCurrentLocation()
     }
 
@@ -106,7 +119,7 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
      * GetUserLocationClass Listener
      * */
     override fun onCurrentUserLocationReceived(latitude: Double, longitude: Double) {
-        viewModel.getWeatherDetailsForCurrentCity(getString(R.string.weather_api_key), 35.001965, 34.047329)
+        viewModel.getWeatherDetailsForCurrentCity(getString(R.string.weather_api_key), latitude, longitude)
     }
 
     override fun initViewModel() = MainPageViewModel::class.java

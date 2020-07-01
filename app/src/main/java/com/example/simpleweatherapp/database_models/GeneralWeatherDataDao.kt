@@ -18,4 +18,8 @@ interface GeneralWeatherDataDao {
     @Query("SELECT * FROM GeneralWeatherData")
     fun getWeatherData(): MutableList<GeneralAndSpecificWeatherData>?
 
+    @Transaction
+    @Query("SELECT * FROM GeneralWeatherData WHERE city_name = :selectedCityName")
+    fun getWeatherDataByCityName(selectedCityName: String): MutableList<GeneralAndSpecificWeatherData>
+
 }

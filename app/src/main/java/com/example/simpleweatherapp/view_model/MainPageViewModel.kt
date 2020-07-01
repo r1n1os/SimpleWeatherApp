@@ -3,6 +3,8 @@ package com.example.simpleweatherapp.view_model
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.example.simpleweatherapp.R
+import com.example.simpleweatherapp.SimpleWeatherApp
 import com.example.simpleweatherapp.base_classes.BaseViewModel
 import com.example.simpleweatherapp.database_models.*
 import com.example.simpleweatherapp.services.WeatherService
@@ -39,6 +41,24 @@ class MainPageViewModel(application: Application) : BaseViewModel(application) {
                 }
             }.collect { baseWeatherModel ->
                 saveWeatherDataIntoLocalDatabase(baseWeatherModel)
+            }
+        }
+    }
+
+    fun handleCitySelection(selectedCity: String) {
+        launch {
+            flow {
+                var weatherHistoryForSelectedCity = mutableListOf<GeneralAndSpecificWeatherData>()
+                withContext(Dispatchers.IO) {
+                    weatherHistoryForSelectedCity = if (selectedCity == "All Cities") {
+                        db.generalWeatherDataDao().getWeatherData()!!
+                    } else {
+                        db.generalWeatherDataDao().getWeatherDataByCityName(selectedCity)
+                    }
+                }
+                emit(weatherHistoryForSelectedCity)
+            }.collect {
+                weatherSearchHistory.value = it
             }
         }
     }
@@ -81,7 +101,9 @@ class MainPageViewModel(application: Application) : BaseViewModel(application) {
                 }
                 emit(cityNamesList)
             }.collect { cityNameList ->
-                cityNames.value = cityNameList
+                val tempListWithCityNames = cityNameList
+                 tempListWithCityNames.add(0, "All Cities")
+                cityNames.value = tempListWithCityNames
             }
         }
     }

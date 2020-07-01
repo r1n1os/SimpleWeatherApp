@@ -1,13 +1,19 @@
 package com.example.simpleweatherapp
 
 import android.app.Application
-import androidx.room.Room
 
 class SimpleWeatherApp: Application() {
 
-    override fun onCreate() {
-        super.onCreate()
+    companion object{
+        private var mInstance: SimpleWeatherApp? = null
+
+        fun getSimpleWeatherAppInstance(): SimpleWeatherApp? {
+            return mInstance
+        }
     }
 
-
+    override fun onCreate() {
+        super.onCreate()
+        mInstance = this
+    }
 }
