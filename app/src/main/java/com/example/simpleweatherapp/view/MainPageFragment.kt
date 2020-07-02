@@ -62,10 +62,10 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
     }
 
     private fun observeWeather() {
-        hideProgressDialog()
         viewModel.weatherSearchHistory.observe(this.requireActivity(), Observer { weatherHistory ->
             weatherHistory?.let {
                 adapter?.loadData(it.sortedBy { it.generalWeatherData.id }.toMutableList())
+                hideProgressDialog()
             }
         })
     }
@@ -78,6 +78,7 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
 
     private fun setCityNamesToSpinner(listOfCityNames: MutableList<String>?) {
         val spinnerAdapter = ArrayAdapter(this.requireContext(), android.R.layout.simple_spinner_item, listOfCityNames as List<String>)
+        mainPageSpinner.setSelection(0, false)
         mainPageSpinner.adapter = spinnerAdapter
     }
 
@@ -110,7 +111,6 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-       // showProgressDialog()
         viewModel.handleCitySelection(parent?.getItemAtPosition(position) as String)
     }
     override fun onNothingSelected(parent: AdapterView<*>?) {}
