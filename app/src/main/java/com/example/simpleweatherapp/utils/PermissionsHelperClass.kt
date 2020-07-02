@@ -11,21 +11,17 @@ class PermissionsHelperClass {
     interface OnPermissionListener {
         fun onPermissionGranted()
         fun onPermissionRequestNeeded()
-        fun onPermissionDeniedWithDontShowAgain()
+        fun onPermissionDenied()
     }
 
     private var onPermissionListener: OnPermissionListener? = null
 
     fun checkPermissions(context: Context, permission: String, onPermissionListener: OnPermissionListener) {
         this.onPermissionListener = onPermissionListener
-        if (shouldAskForPermission(context, permission)) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(context as Activity, permission)) {
-                this.onPermissionListener?.onPermissionRequestNeeded()
-            } else {
-                this.onPermissionListener?.onPermissionDeniedWithDontShowAgain()
-            }
-        } else {
-            this.onPermissionListener?.onPermissionGranted()
+        when{
+            shouldAskForPermission(context, permission) -> this.onPermissionListener?.onPermissionRequestNeeded()
+            ActivityCompat.shouldShowRequestPermissionRationale(context as Activity, permission) -> this.onPermissionListener?.onPermissionDenied()
+            else -> this.onPermissionListener?.onPermissionGranted()
         }
     }
 

@@ -1,6 +1,8 @@
 package com.example.simpleweatherapp.view
 
 import android.Manifest
+import android.content.DialogInterface
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -85,11 +87,14 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
     }
 
     private fun requestLocationPermissions() {
-        ActivityCompat.requestPermissions(this.requireActivity(), arrayOf(LOCATION_PERMISSIONS), LOCATION_PERMISSIONS_REQUEST_CODE)
+        requestPermissions(arrayOf(LOCATION_PERMISSIONS), LOCATION_PERMISSIONS_REQUEST_CODE)
     }
 
     private fun handleRequestPermissions(grantResults: IntArray) {
-        //viewModel.checkIfPermissionsAreGranted(grantResults)
+        when (grantResults[0]) {
+            PackageManager.PERMISSION_GRANTED -> getUserCurrentLocation()
+            else -> showAlertDialogToExplainReasonOfPermissionRequired()
+        }
     }
 
     private fun getUserCurrentLocation() {
@@ -122,7 +127,14 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
         requestLocationPermissions()
     }
 
-    override fun onPermissionDeniedWithDontShowAgain() {
+    override fun onPermissionDenied() {
+        showAlertDialogToExplainReasonOfPermissionRequired()
+    }
+
+    private fun showAlertDialogToExplainReasonOfPermissionRequired() {
+        showAlertDialog("", "Application needs you location in order to get the weather details at your current location", DialogInterface.OnClickListener { dialog, which ->
+
+        })
     }
 
     /**
