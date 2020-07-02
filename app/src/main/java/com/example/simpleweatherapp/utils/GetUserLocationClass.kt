@@ -52,7 +52,7 @@ class GetUserLocationClass(var acitvity: Activity) {
         locationRequest = LocationRequest.create()
             .setInterval(1000)
             .setFastestInterval(1000)
-            .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
+            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(p0: LocationResult?) {
                 if (!gotUserLocation) {

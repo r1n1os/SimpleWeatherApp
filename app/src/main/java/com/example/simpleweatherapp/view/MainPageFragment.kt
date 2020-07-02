@@ -24,7 +24,7 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
 
     companion object {
         //permission
-        const val LOCATION_PERMISSIONS = Manifest.permission.ACCESS_COARSE_LOCATION
+        const val LOCATION_PERMISSIONS = Manifest.permission.ACCESS_FINE_LOCATION
         const val LOCATION_PERMISSIONS_REQUEST_CODE = 31
     }
 
