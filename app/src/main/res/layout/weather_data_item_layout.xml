@@ -35,6 +35,18 @@
         app:layout_constraintTop_toBottomOf="@+id/cityNameTextView" />
 
     <TextView
+        android:id="@+id/tempIndicatpr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="9dp"
+        android:text="o"
+        android:textColor="#000"
+        android:textSize="10sp"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toBottomOf="@+id/weatherTemperatureTextView"
+        app:layout_constraintStart_toEndOf="@+id/weatherTemperatureTextView" />
+
+    <TextView
         android:id="@+id/weatherDescriptionTextView"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
