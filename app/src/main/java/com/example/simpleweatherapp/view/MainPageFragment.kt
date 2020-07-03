@@ -132,7 +132,7 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
     }
 
     private fun showAlertDialogToExplainReasonOfPermissionRequired() {
-        showAlertDialog("", "Application needs you location in order to get the weather details at your current location", DialogInterface.OnClickListener { dialog, which ->
+        showAlertDialog("", getString(R.string.reason_app_needs_location_permissions), DialogInterface.OnClickListener { dialog, which ->
 
         })
     }

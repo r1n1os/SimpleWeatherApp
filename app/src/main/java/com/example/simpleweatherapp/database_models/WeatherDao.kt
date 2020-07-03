@@ -8,5 +8,5 @@ import androidx.room.OnConflictStrategy
 interface WeatherDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertWeatherData(weatherModel: WeatherModel)
+    fun insertWeatherData(weatherModel: WeatherModel): Long
 }

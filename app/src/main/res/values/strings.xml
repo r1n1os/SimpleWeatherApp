@@ -6,4 +6,5 @@
     <string name="places_list">Places List</string>
     <string name="place_name">Place Name</string>
     <string name="ok_text">Ok</string>
+    <string name="reason_app_needs_location_permissions">Application needs you location in order to get the weather details at your current location</string>
 </resources>

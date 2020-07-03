@@ -15,6 +15,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun weatherDao(): WeatherDao
 
     companion object {
+        var TEST_MODE = false
+
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
@@ -24,13 +26,14 @@ abstract class AppDatabase : RoomDatabase() {
                 return tempInstance
             }
             synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    AppDatabase::class.java,
-                    "Weather_database"
-                ) .build()
-                INSTANCE = instance
-                return instance
+                INSTANCE = if (TEST_MODE){
+                    Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "Weather_database").allowMainThreadQueries().build()
+                } else {
+                    Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "Weather_database").build()
+                }
+
+                return INSTANCE!!
+
             }
         }
     }
