@@ -1,8 +1,11 @@
 package com.example.simpleweatherapp.view_model
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.simpleweatherapp.R
+import com.example.simpleweatherapp.SimpleWeatherApp
 import com.example.simpleweatherapp.base_classes.BaseViewModel
 import com.example.simpleweatherapp.database_models.AppDatabase
 import com.example.simpleweatherapp.database_models.BaseWeatherModel
@@ -10,6 +13,7 @@ import com.example.simpleweatherapp.database_models.GeneralAndSpecificWeatherDat
 import com.example.simpleweatherapp.database_models.GeneralWeatherData
 import com.example.simpleweatherapp.services.WeatherService
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -42,9 +46,9 @@ class PlaceListViewModel(application: Application) : BaseViewModel(application) 
         launch {
             flow {
                 withContext(Dispatchers.IO){
-                    var weatherResponse =  weatherService.getWeatherDetailsBasedOnUserLocation(apiKey, selectedWeatherResult.generalWeatherData.lat, selectedWeatherResult.generalWeatherData.lon)
+                    val weatherResponse =  weatherService.getWeatherDetailsBasedOnUserLocation(apiKey, selectedWeatherResult.generalWeatherData.lat, selectedWeatherResult.generalWeatherData.lon)
                     withContext(Dispatchers.Main) {
-                        if (weatherResponse.isSuccessful) {
+                        if (weatherResponse.isSuccessful  && weatherResponse.code() == 200) {
                             emit(weatherResponse.body())
                         } else {
                             isWeatherUpdatedForSelectedPlace.value = false
@@ -52,6 +56,8 @@ class PlaceListViewModel(application: Application) : BaseViewModel(application) 
                         }
                     }
                 }
+            }.catch {
+                errorMessage.value = SimpleWeatherApp.getSimpleWeatherAppInstance()?.getString(R.string.no_internet_connection)
             }.collect { baseWeatherModel ->
                 saveNewWeatherDataToLocalDatabase(baseWeatherModel)
             }
@@ -72,6 +78,8 @@ class PlaceListViewModel(application: Application) : BaseViewModel(application) 
                         }
                     }
                 }
+            }.catch {
+                errorMessage.value = SimpleWeatherApp.getSimpleWeatherAppInstance()?.getString(R.string.no_internet_connection)
             }.collect {baseWeatherModel ->
                 saveNewWeatherDataToLocalDatabase(baseWeatherModel)
             }

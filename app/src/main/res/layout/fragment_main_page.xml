@@ -33,7 +33,6 @@
 
         <androidx.appcompat.widget.AppCompatSpinner
             android:id="@+id/mainPageSpinner"
-            android:theme="@style/spinnerTheme"
             android:layout_width="135dp"
             android:layout_height="20dp"
             android:layout_gravity="end"

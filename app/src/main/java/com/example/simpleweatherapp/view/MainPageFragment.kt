@@ -113,8 +113,11 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        val selectedText = parent!!.getChildAt(0) as TextView
-        selectedText.let { selectedText.setTextColor(ContextCompat.getColor(this.requireContext(), R.color.white)) }
+        var textView: TextView? = null
+        if (parent!!.getChildAt(0) != null){
+            textView = parent.getChildAt(0) as TextView
+        }
+        textView.let { textView?.setTextColor(ContextCompat.getColor(this.requireContext(), R.color.white)) }
         viewModel.handleCitySelection(parent.getItemAtPosition(position) as String)
     }
     override fun onNothingSelected(parent: AdapterView<*>?) {}

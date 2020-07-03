@@ -61,18 +61,19 @@ class PlaceListFragment : BaseFragment<PlaceListViewModel>(), View.OnClickListen
     }
 
     private fun observedWeatherUpdateForSelectedPlace() {
-        hideProgressDialog()
         viewModel.isWeatherUpdatedForSelectedPlace.observe(this.requireActivity(), Observer { isSuccess ->
+            hideProgressDialog()
             if (isSuccess){
                 navController.navigate(R.id.action_placeListFragment_to_mainPageFragment)
             } else {
-
+                showAlertDialog("", getString(R.string.something_went_wrong), DialogInterface.OnClickListener { dialog, which ->  })
             }
         })
     }
 
     private fun observedErrorMessages() {
         viewModel.errorMessage.observe(this.requireActivity(), Observer { errorMessage ->
+            hideProgressDialog()
             showAlertDialog("", errorMessage, DialogInterface.OnClickListener { dialog, which ->
 
             })
@@ -83,12 +84,14 @@ class PlaceListFragment : BaseFragment<PlaceListViewModel>(), View.OnClickListen
         searchIcon.setOnClickListener(this)
         cancelSearchViewArrow.setOnClickListener(this)
         citySearchView.setOnQueryTextListener(this)
+        //backArrowIcon.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
         when(v){
             searchIcon -> enableSearch()
             cancelSearchViewArrow -> disableSearch()
+            //backArrowIcon -> navController.popBackStack()
         }
     }
 
@@ -97,6 +100,7 @@ class PlaceListFragment : BaseFragment<PlaceListViewModel>(), View.OnClickListen
         cancelSearchViewArrow.changeVisibilityOfView(VISIBLE)
         searchIcon.changeVisibilityOfView(INVISIBLE)
         mainPageTitle.changeVisibilityOfView(GONE)
+        //backArrowIcon.changeVisibilityOfView(GONE)
     }
 
     private fun disableSearch(){
@@ -104,6 +108,7 @@ class PlaceListFragment : BaseFragment<PlaceListViewModel>(), View.OnClickListen
         cancelSearchViewArrow.changeVisibilityOfView(INVISIBLE)
         searchIcon.changeVisibilityOfView(VISIBLE)
         mainPageTitle.changeVisibilityOfView(VISIBLE)
+        //backArrowIcon.changeVisibilityOfView(VISIBLE)
     }
 
     /**

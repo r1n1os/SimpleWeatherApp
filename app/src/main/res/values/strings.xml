@@ -8,4 +8,6 @@
     <string name="ok_text">Ok</string>
     <string name="reason_app_needs_location_permissions">Application needs you location in order to get the weather details at your current location</string>
     <string name="main_page">Main Page</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="no_internet_connection">No Internet Connection</string>
 </resources>
