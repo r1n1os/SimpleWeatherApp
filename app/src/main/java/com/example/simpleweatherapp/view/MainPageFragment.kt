@@ -9,7 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import androidx.core.app.ActivityCompat
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -20,6 +21,7 @@ import com.example.simpleweatherapp.utils.GetUserLocationClass
 import com.example.simpleweatherapp.utils.PermissionsHelperClass
 import com.example.simpleweatherapp.view_model.MainPageViewModel
 import kotlinx.android.synthetic.main.fragment_main_page.*
+
 
 class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperClass.OnPermissionListener,
         GetUserLocationClass.OnGetUserCurrentLocationCommonClass, AdapterView.OnItemSelectedListener, View.OnClickListener, WeatherRecyclerViewAdapter.OnWeatherAdapterListener {
@@ -111,7 +113,9 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        viewModel.handleCitySelection(parent?.getItemAtPosition(position) as String)
+        val selectedText = parent!!.getChildAt(0) as TextView
+        selectedText.let { selectedText.setTextColor(ContextCompat.getColor(this.requireContext(), R.color.white)) }
+        viewModel.handleCitySelection(parent.getItemAtPosition(position) as String)
     }
     override fun onNothingSelected(parent: AdapterView<*>?) {}
 

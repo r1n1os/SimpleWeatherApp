@@ -7,4 +7,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+
+
+    <style name="spinnerTheme">
+        <item name="android:state_selected">@color/white</item>
+        <item name="tabSelectedTextColor">@color/white</item>
+    </style>
 </resources>
