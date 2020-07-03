@@ -29,7 +29,7 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
         Toast.makeText(this.requireContext(), message, Toast.LENGTH_LONG).show()
     }
 
-    protected fun showProgressDialog()  {
+    protected fun showProgressDialog() {
         progressDialog = AlertDialog.Builder(requireContext())
                 .setView(LayoutInflater.from(this.context).inflate(R.layout.layout_progress_dialog, null))
                 .setCancelable(false)

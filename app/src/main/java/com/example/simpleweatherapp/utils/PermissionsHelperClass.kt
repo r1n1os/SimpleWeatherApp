@@ -18,7 +18,7 @@ class PermissionsHelperClass {
 
     fun checkPermissions(context: Context, permission: String, onPermissionListener: OnPermissionListener) {
         this.onPermissionListener = onPermissionListener
-        when{
+        when {
             shouldAskForPermission(context, permission) -> this.onPermissionListener?.onPermissionRequestNeeded()
             ActivityCompat.shouldShowRequestPermissionRationale(context as Activity, permission) -> this.onPermissionListener?.onPermissionDenied()
             else -> this.onPermissionListener?.onPermissionGranted()

@@ -25,12 +25,12 @@ class AppDatabaseTest {
     fun setup() {
         AppDatabase.TEST_MODE = true
         db = AppDatabase.getDatabase(application)
-        generalWeatherDataDao =db.generalWeatherDataDao()
+        generalWeatherDataDao = db.generalWeatherDataDao()
         weatherDao = db.weatherDao()
     }
 
     @Test
-    fun insertWeatherData(){
+    fun insertWeatherData() {
         val weatherModel = WeatherModel(2, "sunny.png", "c34t", "clear sky", 1)
 
         val weatherTestResult = weatherDao?.insertWeatherData(weatherModel)
@@ -39,7 +39,7 @@ class AppDatabaseTest {
     }
 
     @Test
-    fun insertGeneralWeatherDataSuccess(){
+    fun insertGeneralWeatherDataSuccess() {
         val weatherModel = WeatherModel(2, "sunny.png", "c34t", "clear sky", 1)
         val generalWeatherData = GeneralWeatherData(1, "Limassol", "CY", 34.7071, 33.0226, 32.0, weatherModel, "2020-07-2 19:00:00")
 
@@ -49,19 +49,8 @@ class AppDatabaseTest {
         Assert.assertEquals(generalWeatherData.id, generalWeatherDataTest?.get(0)?.id)
     }
 
-   /* @Test
-    fun insertGeneralWeatherDataUnSuccess(){
-        val weatherModel = WeatherModel(2, "sunny.png", "c34t", "clear sky", 1)
-        val generalWeatherData = GeneralWeatherData(1, "Limassol", "CY", 34.7071, 33.0226, 32.0, weatherModel, "2020-07-2 19:00:00")
-
-        //generalWeatherDataDao?.insertGeneralWeatherData(GeneralWeatherData())
-
-        val generalWeatherDataTest = generalWeatherDataDao?.getAllGeneralWeatherData()
-        Assert.assertEquals(generalWeatherData.id, generalWeatherDataTest?.get(0)?.id)
-    }
-*/
     @Test
-    fun getAllGeneralWeatherDataSuccess(){
+    fun getAllGeneralWeatherDataSuccess() {
         val weatherModel = WeatherModel(2, "sunny.png", "c34t", "clear sky", 1)
         val weatherModel2 = WeatherModel(2, "sunny.png", "c35t", "Raining", 2)
         val generalWeatherData = GeneralWeatherData(1, "Limassol", "CY", 34.7071, 33.0226, 32.0, weatherModel, "2020-07-2 19:00:00")
@@ -74,21 +63,8 @@ class AppDatabaseTest {
         Assert.assertEquals(2, generalWeatherDataTest?.size)
     }
 
-   /* @Test
-    fun getAllGeneralWeatherDataUnSuccess(){
-        val weatherModel = WeatherModel(2, "sunny.png", "c34t", "clear sky", 1)
-        val weatherModel2 = WeatherModel(2, "sunny.png", "c35t", "Raining", 2)
-        val generalWeatherData = GeneralWeatherData(1, "Limassol", "CY", 34.7071, 33.0226, 32.0, weatherModel, "2020-07-2 19:00:00")
-        val generalWeatherData2 = GeneralWeatherData(2, "Limassol", "CY", 34.7071, 33.0226, 32.0, weatherModel2, "2020-07-2 19:00:00")
-
-      *//*  generalWeatherDataDao?.insertGeneralWeatherData(generalWeatherData)
-        generalWeatherDataDao?.insertGeneralWeatherData(generalWeatherData2)*//*
-
-        Assert.assertEquals(null, mainPageViewModel.weatherSearchHistory.value)
-    }*/
-
     @Test
-    fun getAllAvailableCityNamesSuccess(){
+    fun getAllAvailableCityNamesSuccess() {
         val weatherModel = WeatherModel(2, "sunny.png", "c34t", "clear sky", 1)
         val generalWeatherData = GeneralWeatherData(1, "Limassol", "CY", 34.7071, 33.0226, 32.0, weatherModel, "2020-07-2 19:00:00")
         val weatherModel2 = WeatherModel(2, "sunny.png", "c35t", "Raining", 2)
@@ -104,31 +80,21 @@ class AppDatabaseTest {
     }
 
     @Test
-    fun getWeatherDataByCityNameSuccess(){
+    fun getWeatherDataByCityNameSuccess() {
         val weatherModel = WeatherModel(2, "sunny.png", "c34t", "clear sky", 1)
         val generalWeatherData = GeneralWeatherData(1, "Limassol", "CY", 34.7071, 33.0226, 32.0, weatherModel, "2020-07-2 19:00:00")
+        val generalWeatherWithWeatherModel = mutableListOf<GeneralAndSpecificWeatherData>(GeneralAndSpecificWeatherData(generalWeatherData, weatherModel))
 
         generalWeatherDataDao?.insertGeneralWeatherData(generalWeatherData)
+        weatherDao?.insertWeatherData(weatherModel)
 
         val generalWeatherDataTest = generalWeatherDataDao?.getWeatherDataByCityName("Limassol")
 
-        Assert.assertEquals(generalWeatherDataTest, generalWeatherDataTest)
+        Assert.assertEquals(generalWeatherWithWeatherModel, generalWeatherDataTest)
     }
 
-   /* @Test
-    fun getWeatherDataByCityNameUnSuccess(){
-        val weatherModel = WeatherModel(2, "sunny.png", "c34t", "clear sky", 1)
-        val generalWeatherData = GeneralWeatherData(1, "Limassol", "CY", 34.7071, 33.0226, 32.0, weatherModel, "2020-07-2 19:00:00")
-
-        generalWeatherDataDao?.insertGeneralWeatherData(generalWeatherData)
-
-        val generalWeatherDataTest = generalWeatherDataDao?.getWeatherDataByCityName("Nicosia")
-
-        Assert.assertEquals(null, generalWeatherDataTest)
-    }*/
-
     @Test
-    fun testGeneralAndSpecificWeatherDataRelationShip(){
+    fun testGeneralAndSpecificWeatherDataRelationShip() {
         val weatherModel = WeatherModel(2, "sunny.png", "c34t", "clear sky", 1)
         val generalWeatherData = GeneralWeatherData(1, "Limassol", "CY", 34.7071, 33.0226, 32.0, weatherModel, "2020-07-2 19:00:00")
 

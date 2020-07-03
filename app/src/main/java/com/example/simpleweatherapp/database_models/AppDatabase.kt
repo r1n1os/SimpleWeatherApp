@@ -1,4 +1,3 @@
-
 package com.example.simpleweatherapp.database_models
 
 import android.content.Context
@@ -26,7 +25,7 @@ abstract class AppDatabase : RoomDatabase() {
                 return tempInstance
             }
             synchronized(this) {
-                INSTANCE = if (TEST_MODE){
+                INSTANCE = if (TEST_MODE) {
                     Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "Weather_database").allowMainThreadQueries().build()
                 } else {
                     Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "Weather_database").build()

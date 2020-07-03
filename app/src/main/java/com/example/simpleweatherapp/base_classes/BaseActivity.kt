@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import com.example.simpleweatherapp.R
 
-abstract class BaseActivity<T: BaseViewModel>: AppCompatActivity() {
+abstract class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
 
     protected lateinit var viewModel: T
     protected abstract fun initViewModel(): Class<T>
@@ -19,7 +19,7 @@ abstract class BaseActivity<T: BaseViewModel>: AppCompatActivity() {
         viewModel = ViewModelProviders.of(this).get(initViewModel())
     }
 
-    protected fun showToast(message: String){
+    protected fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 

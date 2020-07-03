@@ -27,16 +27,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 @Config(application = Application::class)
 class MainPageViewModelTest {
 
-    val application = RuntimeEnvironment.application
+    private val application = RuntimeEnvironment.application
     private lateinit var weatherApi: WeatherApi
     @Mock
     lateinit var weatherService: WeatherService
 
     @Mock
     var mainPageViewModel = MainPageViewModel(application)
-
-    private var testSingle: Response<BaseWeatherModel>? = null
-
 
     @Before
     fun setup() {

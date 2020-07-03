@@ -15,8 +15,8 @@ import kotlinx.android.synthetic.main.weather_data_item_layout.view.*
 
 class WeatherRecyclerViewAdapter(var onWeatherAdapterListener: OnWeatherAdapterListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    interface OnWeatherAdapterListener{
-        fun onWeatherResultClicked(selectedWeatherResult: GeneralAndSpecificWeatherData)  {}
+    interface OnWeatherAdapterListener {
+        fun onWeatherResultClicked(selectedWeatherResult: GeneralAndSpecificWeatherData) {}
     }
 
     private var generalAndSpecificWeatherDataList = mutableListOf<GeneralAndSpecificWeatherData>()
@@ -41,22 +41,32 @@ class WeatherRecyclerViewAdapter(var onWeatherAdapterListener: OnWeatherAdapterL
     inner class WeatherDataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         @SuppressLint("SetTextI18n")
         fun onBindData(generalAndSpecificWeatherData: GeneralAndSpecificWeatherData) {
+            setDataToViews(generalAndSpecificWeatherData)
+            initListener()
+        }
+
+        @SuppressLint("SetTextI18n")
+        private fun setDataToViews(generalAndSpecificWeatherData: GeneralAndSpecificWeatherData) {
+            val url = "$BASE_ICON_URL${generalAndSpecificWeatherData.generalWeatherData.weather.icon}.png"
+
             itemView.cityNameTextView.text = "${generalAndSpecificWeatherData.generalWeatherData.city_name}, ${generalAndSpecificWeatherData.generalWeatherData.country_code}"
             itemView.weatherTemperatureTextView.text = generalAndSpecificWeatherData.generalWeatherData.temp.toString()
             itemView.weatherDescriptionTextView.text = generalAndSpecificWeatherData.generalWeatherData.weather.description
-            val url = "$BASE_ICON_URL${generalAndSpecificWeatherData.generalWeatherData.weather.icon}.png"
             Glide.with(itemView.context).load(url).placeholder(createCircularProgressDrawable()).into(itemView.weatherStatusIcon)
-            itemView.setOnClickListener{
-                onWeatherAdapterListener.onWeatherResultClicked(generalAndSpecificWeatherDataList[adapterPosition])
-            }
         }
 
         private fun createCircularProgressDrawable(): CircularProgressDrawable {
-          return  CircularProgressDrawable(itemView.context).apply {
-              strokeWidth = 5f
-              centerRadius = 30f
-              start()
-          }
+            return CircularProgressDrawable(itemView.context).apply {
+                strokeWidth = 5f
+                centerRadius = 30f
+                start()
+            }
+        }
+
+        private fun initListener() {
+            itemView.setOnClickListener {
+                onWeatherAdapterListener.onWeatherResultClicked(generalAndSpecificWeatherDataList[adapterPosition])
+            }
         }
     }
 }

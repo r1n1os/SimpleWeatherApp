@@ -4,6 +4,7 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
+import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -13,6 +14,7 @@ import com.example.simpleweatherapp.base_classes.BaseFragment
 import com.example.simpleweatherapp.database_models.GeneralAndSpecificWeatherData
 import com.example.simpleweatherapp.utils.Constants.GONE
 import com.example.simpleweatherapp.utils.Constants.INVISIBLE
+import com.example.simpleweatherapp.utils.Constants.SOURCE_FRAGMENT
 import com.example.simpleweatherapp.utils.Constants.VISIBLE
 import com.example.simpleweatherapp.utils.changeVisibilityOfView
 import com.example.simpleweatherapp.view_model.PlaceListViewModel
@@ -56,17 +58,17 @@ class PlaceListFragment : BaseFragment<PlaceListViewModel>(), View.OnClickListen
     private fun observedSavePlaces() {
         hideProgressDialog()
         viewModel.savedWeatherPlacesList.observe(this.requireActivity(), Observer { savedWeatherPlacesList ->
-           adapter?.loadData(savedWeatherPlacesList)
+            adapter?.loadData(savedWeatherPlacesList.sortedByDescending { it.generalWeatherData.id }.toMutableList())
         })
     }
 
     private fun observedWeatherUpdateForSelectedPlace() {
         viewModel.isWeatherUpdatedForSelectedPlace.observe(this.requireActivity(), Observer { isSuccess ->
             hideProgressDialog()
-            if (isSuccess){
-                navController.navigate(R.id.action_placeListFragment_to_mainPageFragment)
+            if (isSuccess) {
+                navController.navigate(R.id.action_placeListFragment_to_mainPageFragment, bundleOf(SOURCE_FRAGMENT to this.javaClass.simpleName))
             } else {
-                showAlertDialog("", getString(R.string.something_went_wrong), DialogInterface.OnClickListener { dialog, which ->  })
+                showAlertDialog("", getString(R.string.something_went_wrong), DialogInterface.OnClickListener { dialog, which -> })
             }
         })
     }
@@ -74,9 +76,7 @@ class PlaceListFragment : BaseFragment<PlaceListViewModel>(), View.OnClickListen
     private fun observedErrorMessages() {
         viewModel.errorMessage.observe(this.requireActivity(), Observer { errorMessage ->
             hideProgressDialog()
-            showAlertDialog("", errorMessage, DialogInterface.OnClickListener { dialog, which ->
-
-            })
+            showAlertDialog("", errorMessage, DialogInterface.OnClickListener { dialog, which -> })
         })
     }
 
@@ -88,7 +88,7 @@ class PlaceListFragment : BaseFragment<PlaceListViewModel>(), View.OnClickListen
     }
 
     override fun onClick(v: View?) {
-        when(v){
+        when (v) {
             searchIcon -> enableSearch()
             cancelSearchViewArrow -> disableSearch()
             //backArrowIcon -> navController.popBackStack()
@@ -103,7 +103,7 @@ class PlaceListFragment : BaseFragment<PlaceListViewModel>(), View.OnClickListen
         //backArrowIcon.changeVisibilityOfView(GONE)
     }
 
-    private fun disableSearch(){
+    private fun disableSearch() {
         citySearchView.changeVisibilityOfView(INVISIBLE)
         cancelSearchViewArrow.changeVisibilityOfView(INVISIBLE)
         searchIcon.changeVisibilityOfView(VISIBLE)
@@ -119,7 +119,10 @@ class PlaceListFragment : BaseFragment<PlaceListViewModel>(), View.OnClickListen
         return true
     }
 
-    override fun onQueryTextChange(newText: String?): Boolean { return true }
+    override fun onQueryTextChange(newText: String?): Boolean {
+        return true
+    }
+
     /**
      * WeatherRecyclerViewAdapter Listeners
      * */

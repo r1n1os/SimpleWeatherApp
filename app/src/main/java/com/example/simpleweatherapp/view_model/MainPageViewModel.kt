@@ -9,6 +9,7 @@ import com.example.simpleweatherapp.base_classes.BaseViewModel
 import com.example.simpleweatherapp.database_models.*
 import com.example.simpleweatherapp.services.WeatherService
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -21,8 +22,10 @@ class MainPageViewModel(application: Application) : BaseViewModel(application) {
     private var weatherService = WeatherService().getWeatherService()
     val weatherSearchHistory = MutableLiveData<MutableList<GeneralAndSpecificWeatherData>>()
     val cityNames = MutableLiveData<MutableList<String>>()
+    val requestFailed = MutableLiveData<Boolean>()
+    val errorMessage = MutableLiveData<String>()
 
-/*    init {
+    /*init {
         DaggerApiComponent.create().inject(this)
     }*/
 
@@ -32,12 +35,17 @@ class MainPageViewModel(application: Application) : BaseViewModel(application) {
                 withContext(Dispatchers.IO) {
                     val weatherResponse = weatherService.getWeatherDetailsBasedOnUserLocation(apiKey, latitude, longitude)
                     withContext(Dispatchers.Main) {
-                        if (weatherResponse.isSuccessful) {
+                        if (weatherResponse.isSuccessful && weatherResponse.code() == 200) {
                             emit(weatherResponse.body()!!)
                         } else {
-                            Log.d("sdasdas", "fail")
+                            errorMessage.value = weatherResponse.message()
                         }
                     }
+                }
+            }.catch { error ->
+                when (error.localizedMessage) {
+                    SimpleWeatherApp.getSimpleWeatherAppInstance()?.getString(R.string.localize_error_message_for_no_internet_connection) -> errorMessage.value = SimpleWeatherApp.getSimpleWeatherAppInstance()?.getString(R.string.no_internet_connection)
+                    else -> errorMessage.value = error.localizedMessage
                 }
             }.collect { baseWeatherModel ->
                 saveWeatherDataIntoLocalDatabase(baseWeatherModel)
@@ -50,23 +58,21 @@ class MainPageViewModel(application: Application) : BaseViewModel(application) {
             flow {
                 var weatherHistoryForSelectedCity = mutableListOf<GeneralAndSpecificWeatherData>()
                 withContext(Dispatchers.IO) {
-                    weatherHistoryForSelectedCity = if (selectedCity == "All Cities") {
+                    weatherHistoryForSelectedCity = if (selectedCity == SimpleWeatherApp.getSimpleWeatherAppInstance()?.getString(R.string.all_cities)) {
                         db.generalWeatherDataDao().getWeatherData()!!
                     } else {
                         db.generalWeatherDataDao().getWeatherDataByCityName(selectedCity)
                     }
                 }
                 emit(weatherHistoryForSelectedCity)
+            }.catch { error ->
+                errorMessage.value = error.localizedMessage
             }.collect {
                 weatherSearchHistory.value = it
             }
         }
     }
 
-    /**
-     * The reason I am using for loop to get the object of weatherModel is because in order to parse data from the response jsonObject,
-     * I have to parse the JsonArray that's why I am using list for the BaseWeatherModel. So I am using for instead of get index of 0 to avoid any case that might produce crash
-     * */
     private fun saveWeatherDataIntoLocalDatabase(baseWeatherModel: BaseWeatherModel) {
         launch {
             flow {
@@ -92,7 +98,7 @@ class MainPageViewModel(application: Application) : BaseViewModel(application) {
         }
     }
 
-    private fun getAllCityNamesFromWeatherHistory() {
+    fun getAllCityNamesFromWeatherHistory() {
         launch {
             flow {
                 var cityNamesList = mutableListOf<String>()
@@ -102,7 +108,7 @@ class MainPageViewModel(application: Application) : BaseViewModel(application) {
                 emit(cityNamesList)
             }.collect { cityNameList ->
                 val tempListWithCityNames = cityNameList
-                 tempListWithCityNames.add(0, "All Cities")
+                tempListWithCityNames.add(0, SimpleWeatherApp.getSimpleWeatherAppInstance()?.getString(R.string.all_cities)!!)
                 cityNames.value = tempListWithCityNames
             }
         }

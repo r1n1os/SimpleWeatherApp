@@ -37,7 +37,6 @@ class GetUserLocationClass(var acitvity: Activity) {
 
     @SuppressLint("MissingPermission")
     fun getUserCurrentLocation() {
-        //locationCallBackListener()
         locationRequestBuilder()
         when {
             isGPSEnabled() -> mFusedLocationClient?.requestLocationUpdates(locationRequest, locationCallback, null)
@@ -50,16 +49,16 @@ class GetUserLocationClass(var acitvity: Activity) {
 
     private fun locationRequestBuilder() {
         locationRequest = LocationRequest.create()
-            .setInterval(1000)
-            .setFastestInterval(1000)
-            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(1000)
+                .setFastestInterval(1000)
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(p0: LocationResult?) {
                 if (!gotUserLocation) {
                     gotUserLocation = true
                     val latitude: Double? = p0?.locations?.get(0)?.latitude!!
                     val longitude: Double? = p0?.locations?.get(0)?.longitude!!
-                    if (latitude != null && longitude != null){
+                    if (latitude != null && longitude != null) {
                         onGetUserCurrentLocationCommonClass.onCurrentUserLocationReceived(latitude, longitude)
                     }
                     //Log.d("currentLocation", p0?.locations?.get(0)?.latitude.toString() + ", " + p0?.locations?.get(0)?.longitude)

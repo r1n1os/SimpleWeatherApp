@@ -6,18 +6,18 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class WeatherService {
 
-  /*  @Inject
-    lateinit var weatherApi: WeatherApi
+    /*  @Inject
+      lateinit var weatherApi: WeatherApi
 
-    init {
-        DaggerApiComponent.create().inject(this)
+      init {
+          DaggerApiComponent.create().inject(this)
+      }
+  */
+    fun getWeatherService(): WeatherApi {
+        return Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(WeatherApi::class.java)
     }
-*/
-    fun getWeatherService(): WeatherApi{
-      return Retrofit.Builder()
-          .baseUrl(BASE_URL)
-          .addConverterFactory(GsonConverterFactory.create())
-          .build()
-          .create(WeatherApi::class.java)
-  }
 }

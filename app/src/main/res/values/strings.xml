@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">SimpleWeatherApp</string>
-   <string name="weather_api_key">156b4168909644728132f265a8626cb3</string>
+    <string name="weather_api_key">156b4168909644728132f265a8626cb3</string>
     <string name="please_wait">Please wait</string>
     <string name="all_cities">All Cities</string>
     <string name="places_list">Places List</string>
@@ -10,4 +10,5 @@
     <string name="main_page">Main Page</string>
     <string name="something_went_wrong">Something went wrong</string>
     <string name="no_internet_connection">No Internet Connection</string>
+    <string name="localize_error_message_for_no_internet_connection">"Unable to resolve host \"api.weatherbit.io\": No address associated with hostname"</string>
 </resources>

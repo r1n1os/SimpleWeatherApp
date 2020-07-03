@@ -17,6 +17,7 @@ import androidx.navigation.Navigation
 import com.example.simpleweatherapp.R
 import com.example.simpleweatherapp.adapters.WeatherRecyclerViewAdapter
 import com.example.simpleweatherapp.base_classes.BaseFragment
+import com.example.simpleweatherapp.utils.Constants.SOURCE_FRAGMENT
 import com.example.simpleweatherapp.utils.GetUserLocationClass
 import com.example.simpleweatherapp.utils.PermissionsHelperClass
 import com.example.simpleweatherapp.view_model.MainPageViewModel
@@ -34,6 +35,7 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
 
     private lateinit var navController: NavController
     private var adapter: WeatherRecyclerViewAdapter? = null
+    private var sourceFragment = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_main_page, container, false)
@@ -46,11 +48,25 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
     }
 
     private fun initViewAndData() {
-        requestForLocationPermissions()
+        getIntentData()
         initAdapter()
         initListeners()
         observeWeather()
         observeListOfAvailableCityNames()
+        observedErrorMessages()
+        if (sourceFragment == this.javaClass.simpleName || sourceFragment == "") {
+            requestForLocationPermissions()
+        } else {
+            showProgressDialog()
+            viewModel.handleCitySelection(getString(R.string.all_cities))
+            viewModel.getAllCityNamesFromWeatherHistory()
+        }
+    }
+
+    private fun getIntentData() {
+        arguments?.let { argument ->
+            sourceFragment = argument.getString(SOURCE_FRAGMENT, this.javaClass.simpleName)
+        }
     }
 
     private fun initListeners() {
@@ -66,7 +82,7 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
     private fun observeWeather() {
         viewModel.weatherSearchHistory.observe(this.requireActivity(), Observer { weatherHistory ->
             weatherHistory?.let {
-                adapter?.loadData(it.sortedBy { it.generalWeatherData.id }.toMutableList())
+                adapter?.loadData(it.sortedByDescending { it.generalWeatherData.id }.toMutableList())
                 hideProgressDialog()
             }
         })
@@ -75,6 +91,13 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
     private fun observeListOfAvailableCityNames() {
         viewModel.cityNames.observe(this.requireActivity(), Observer { listOfCityNames ->
             setCityNamesToSpinner(listOfCityNames)
+        })
+    }
+
+    private fun observedErrorMessages() {
+        viewModel.errorMessage.observe(this.requireActivity(), Observer { errorMessage ->
+            hideProgressDialog()
+            showAlertDialog("", errorMessage, DialogInterface.OnClickListener { dialog, which -> })
         })
     }
 
@@ -107,19 +130,20 @@ class MainPageFragment : BaseFragment<MainPageViewModel>(), PermissionsHelperCla
     }
 
     override fun onClick(v: View?) {
-        when(v){
+        when (v) {
             savedPLacesImageView -> navController.navigate(R.id.action_mainPageFragment_to_placeListFragment)
         }
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         var textView: TextView? = null
-        if (parent!!.getChildAt(0) != null){
+        if (parent!!.getChildAt(0) != null) {
             textView = parent.getChildAt(0) as TextView
         }
         textView.let { textView?.setTextColor(ContextCompat.getColor(this.requireContext(), R.color.white)) }
         viewModel.handleCitySelection(parent.getItemAtPosition(position) as String)
     }
+
     override fun onNothingSelected(parent: AdapterView<*>?) {}
 
     /**

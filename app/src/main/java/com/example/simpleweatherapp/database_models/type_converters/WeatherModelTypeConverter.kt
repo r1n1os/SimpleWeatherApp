@@ -9,11 +9,11 @@ class WeatherModelTypeConverter {
 
     @TypeConverter
     fun fromWeatherDataModel(weatherModel: WeatherModel?): String? {
-        return if (weatherModel == null){
+        return if (weatherModel == null) {
             null
         } else {
             val gson = Gson()
-            val type = object : TypeToken<WeatherModel>(){}.type
+            val type = object : TypeToken<WeatherModel>() {}.type
             val json = gson.toJson(weatherModel, type)
             json
         }
@@ -21,11 +21,11 @@ class WeatherModelTypeConverter {
 
     @TypeConverter
     fun toWeatherDataModel(weatherModelString: String?): WeatherModel? {
-        return if (weatherModelString == null){
+        return if (weatherModelString == null) {
             null
         } else {
             val gson = Gson()
-            val type = object : TypeToken<WeatherModel>(){}.type
+            val type = object : TypeToken<WeatherModel>() {}.type
             val json = gson.fromJson<WeatherModel>(weatherModelString, type)
             json
         }

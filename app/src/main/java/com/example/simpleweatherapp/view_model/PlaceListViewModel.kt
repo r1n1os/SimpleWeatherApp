@@ -36,19 +36,21 @@ class PlaceListViewModel(application: Application) : BaseViewModel(application) 
                     savedWeatherPlaces = db.generalWeatherDataDao().getWeatherData()!!
                 }
                 emit(savedWeatherPlaces)
+            }.catch { error ->
+                errorMessage.value = error.localizedMessage
             }.collect {
                 savedWeatherPlacesList.value = it
             }
         }
     }
 
-    fun executeRequestToGetWeatherDataForSelectedCity(apiKey: String, selectedWeatherResult: GeneralAndSpecificWeatherData){
+    fun executeRequestToGetWeatherDataForSelectedCity(apiKey: String, selectedWeatherResult: GeneralAndSpecificWeatherData) {
         launch {
             flow {
-                withContext(Dispatchers.IO){
-                    val weatherResponse =  weatherService.getWeatherDetailsBasedOnUserLocation(apiKey, selectedWeatherResult.generalWeatherData.lat, selectedWeatherResult.generalWeatherData.lon)
+                withContext(Dispatchers.IO) {
+                    val weatherResponse = weatherService.getWeatherDetailsBasedOnUserLocation(apiKey, selectedWeatherResult.generalWeatherData.lat, selectedWeatherResult.generalWeatherData.lon)
                     withContext(Dispatchers.Main) {
-                        if (weatherResponse.isSuccessful  && weatherResponse.code() == 200) {
+                        if (weatherResponse.isSuccessful && weatherResponse.code() == 200) {
                             emit(weatherResponse.body())
                         } else {
                             isWeatherUpdatedForSelectedPlace.value = false
@@ -56,15 +58,18 @@ class PlaceListViewModel(application: Application) : BaseViewModel(application) 
                         }
                     }
                 }
-            }.catch {
-                errorMessage.value = SimpleWeatherApp.getSimpleWeatherAppInstance()?.getString(R.string.no_internet_connection)
+            }.catch { error ->
+                when (error.localizedMessage) {
+                    SimpleWeatherApp.getSimpleWeatherAppInstance()?.getString(R.string.localize_error_message_for_no_internet_connection) -> errorMessage.value = SimpleWeatherApp.getSimpleWeatherAppInstance()?.getString(R.string.no_internet_connection)
+                    else -> errorMessage.value = error.localizedMessage
+                }
             }.collect { baseWeatherModel ->
                 saveNewWeatherDataToLocalDatabase(baseWeatherModel)
             }
         }
     }
 
-    fun executeRequestToGetWeatherDataByCityName(apiKey: String, cityName: String){
+    fun executeRequestToGetWeatherDataByCityName(apiKey: String, cityName: String) {
         launch {
             flow {
                 withContext(Dispatchers.IO) {
@@ -80,7 +85,7 @@ class PlaceListViewModel(application: Application) : BaseViewModel(application) 
                 }
             }.catch {
                 errorMessage.value = SimpleWeatherApp.getSimpleWeatherAppInstance()?.getString(R.string.no_internet_connection)
-            }.collect {baseWeatherModel ->
+            }.collect { baseWeatherModel ->
                 saveNewWeatherDataToLocalDatabase(baseWeatherModel)
             }
         }
@@ -105,6 +110,8 @@ class PlaceListViewModel(application: Application) : BaseViewModel(application) 
                     list = db.generalWeatherDataDao().getWeatherData()
                 }
                 emit(list)
+            }.catch { error ->
+                errorMessage.value = error.localizedMessage
             }.collect { generalAndSpecificWeatherData ->
                 isWeatherUpdatedForSelectedPlace.value = true
             }

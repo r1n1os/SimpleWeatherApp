@@ -6,14 +6,14 @@ import com.google.gson.annotations.SerializedName
 
 @Entity
 data class GeneralWeatherData(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int,
-    val city_name: String,
-    val country_code: String,
-    val lat: Double,
-    val lon: Double,
-    val temp: Double,
-    val weather: WeatherModel,
-    @SerializedName("datetime")
-    val dateTime: String
+        @PrimaryKey(autoGenerate = true)
+        val id: Int,
+        val city_name: String,
+        val country_code: String,
+        val lat: Double,
+        val lon: Double,
+        val temp: Double,
+        val weather: WeatherModel,
+        @SerializedName("datetime")
+        val dateTime: String
 )

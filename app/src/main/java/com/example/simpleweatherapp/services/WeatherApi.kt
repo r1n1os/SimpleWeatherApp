@@ -11,8 +11,8 @@ import retrofit2.http.Query
 
 interface WeatherApi {
     @GET(GET_CURRENT_WEATHER_FOR_SPECIFIC_CITY_URL)
-    suspend fun getWeatherDetailsBasedOnUserLocation(@Query("key")apiKey: String, @Query(LAT) lat: Double, @Query(LON) lon: Double): Response<BaseWeatherModel>
+    suspend fun getWeatherDetailsBasedOnUserLocation(@Query("key") apiKey: String, @Query(LAT) lat: Double, @Query(LON) lon: Double): Response<BaseWeatherModel>
 
     @GET(GET_CURRENT_WEATHER_FOR_SPECIFIC_CITY_URL)
-    suspend fun getWeatherDetailsBasedOnCity(@Query("key")apiKey: String, @Query(CITY) cityName: String): Response<BaseWeatherModel>
+    suspend fun getWeatherDetailsBasedOnCity(@Query("key") apiKey: String, @Query(CITY) cityName: String): Response<BaseWeatherModel>
 }
